@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User List</title>
+  <style>
+    body {
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      margin: 20px;
+      background-color: #fffde7; 
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    #status {
+      text-align: center;
+      margin: 10px 0;
+      font-weight: bold;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #fff9c4; 
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #fffde7; 
+    }
+  </style>
+</head>
+<body>
+  <h1>User List</h1>
+  <div id="status"></div>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Code</th>
+      </tr>
+    </thead>
+    <tbody id="userTableBody"></tbody>
+  </table>
+
+  <script>
+    async function fetchUsers() {
+      const status = document.getElementById('status');
+      const userTableBody = document.getElementById('userTableBody');
+
+      status.textContent = "Loading...";
+
+      try {
+        const response = await fetch('https://fordemo-ot4j.onrender.com/users');
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
+        const users = data.users || [];
+
+        userTableBody.innerHTML = '';
+
+        users.forEach(user => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${user.username || '-'}</td>
+            <td>${user.code || '-'}</td>
+          `;
+          userTableBody.appendChild(row);
+        });
+
+        status.textContent = ""; 
+      } catch (err) {
+        status.textContent = ""; 
+      }
+    }
+
+    window.onload = fetchUsers;
+  </script>
+</body>
+</html>
